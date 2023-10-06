@@ -4,6 +4,9 @@ from .serializers  import registerSerializer, loginSerializer, boxSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
+from .models import BoxModel
+from django.core.paginator import Paginator
+
 # Create your views here.
 
 
@@ -37,8 +40,29 @@ class loginApi(APIView):
         except:
             return Response({'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
 class listApi(APIView):
-    pass
+    def get(self,request):
+        try:
+            boxes = BoxModel.objects.all()
+            page = request.GET.get('page',1)
+
+            page_size =2 
+            paginator =  Paginator(boxes,page_size)
+            serializer = boxSerializer(paginator.page(page),many=True)
+        except Exception as e:
+            return Response({
+				'status': False,
+				'message': 'Invalid page number'
+			})
 
 class addApi(APIView):
-    pass
+    def post(self,request):
+        try:
+            data = request.data
+            serializer = boxSerializer(data)
+            if not serializer.is_valid():
+                return Response({'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+            return Response(serializer.data)
 
+        except Exception as e:
+            return Response(serializer.errors)
