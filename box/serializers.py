@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import BoxModel
 
 from django.contrib.auth.models import User
+
+
 class registerSerializer(serializers.Serializer):
     
     email = serializers.EmailField()
@@ -11,10 +13,10 @@ class registerSerializer(serializers.Serializer):
 
     def validate(self,data) :
         if data["email"]:
-            if User.objects.filter(email=data['email']).exusts():
+            if User.objects.filter(email=data['email']).exists():
                 raise serializers.ValidationError("email already exists")
         if data["username"]:
-            if User.objects.filter(email=data['username']).exusts():
+            if User.objects.filter(email=data['username']).exists():
                 raise serializers.ValidationError("username already exists")
         return data
     def create(self,validated_data):
@@ -23,7 +25,7 @@ class registerSerializer(serializers.Serializer):
         user.save()
         return validated_data
     
-    
+
 class loginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password   = serializers.CharField() 

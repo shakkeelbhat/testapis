@@ -20,8 +20,8 @@ class registerApi(APIView):
                 return Response({'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response({'message':'User registered'},status=status.HTTP_200_OK)
-        except:
-            return Response({'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message':"Something went wrong"},status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -48,6 +48,7 @@ class listApi(APIView):
             page_size =2 
             paginator =  Paginator(boxes,page_size)
             serializer = boxSerializer(paginator.page(page),many=True)
+            return Response(serializer.data)
         except Exception as e:
             return Response({
 				'status': False,
@@ -58,11 +59,11 @@ class addApi(APIView):
     def post(self,request):
         try:
             data = request.data
-            serializer = boxSerializer(data)
+            serializer = boxSerializer(data=data)
+
             if not serializer.is_valid():
                 return Response({'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
-
         except Exception as e:
             return Response(serializer.errors)
