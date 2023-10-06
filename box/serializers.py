@@ -1,11 +1,17 @@
-
-
-class registerSerializer():
+from rest_framework import serializers
+from .models import BoxModel
+class registerSerializer(serializers.Serializer):
     
-    pass
+    email = serializers.EmailField()
+    username = serializers.CharField()
+    password   = serializers.CharField() 
 
-class loginSerializer():
-    pass
+class loginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password   = serializers.CharField() 
 
-class boxSerializer():
-    pass
+class boxSerializer(serializers.ModelSerializer):
+    class Meta:
+
+        model = BoxModel
+        fields ='__all__'
